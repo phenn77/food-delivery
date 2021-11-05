@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @Builder
@@ -21,5 +22,14 @@ public class RestaurantData implements Serializable {
     @JsonProperty(value = "business_hours")
     private String businessHours;
 
-    private Object menu;
+    private List<MenuData> menu;
+
+    @Builder
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class MenuData implements Serializable {
+        private String name;
+        private String price;
+    }
 }

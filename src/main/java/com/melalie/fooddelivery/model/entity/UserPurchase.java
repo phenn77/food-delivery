@@ -8,30 +8,32 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 @Entity
-@Table(name = "restaurant")
-@Builder
+@Table(name = "user_purchase")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Restaurant implements Serializable {
+public class UserPurchase implements Serializable {
 
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "dish")
+    private String dish;
 
-    @Column(name = "location")
-    private String location;
+    @Column(name = "restaurantName")
+    private String restaurantName;
 
-    @Column(name = "balance")
-    private BigDecimal balance;
+    @Column(name = "amount")
+    private double amount;
 
-    @Column(name = "business_hours")
-    private String businessHours;
+    @Column(name = "date")
+    private String date;
+
+    @Column(name = "user")
+    private String user;
 }

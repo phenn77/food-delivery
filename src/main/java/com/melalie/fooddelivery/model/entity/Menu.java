@@ -8,15 +8,14 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 @Entity
-@Table(name = "restaurant")
-@Builder
+@Table(name = "menu")
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Restaurant implements Serializable {
+public class Menu implements Serializable {
 
     @Id
     @GeneratedValue(generator = "uuid")
@@ -26,12 +25,9 @@ public class Restaurant implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "location")
-    private String location;
+    @Column(name = "price")
+    private double price;
 
-    @Column(name = "balance")
-    private BigDecimal balance;
-
-    @Column(name = "business_hours")
-    private String businessHours;
+    @Column(name = "restaurantName")
+    private String restaurantName;
 }

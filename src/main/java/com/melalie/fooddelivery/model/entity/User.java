@@ -2,17 +2,18 @@ package com.melalie.fooddelivery.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.Clob;
 
 @Entity
 @Table(name = "user")
 @Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements Serializable {
@@ -30,7 +31,4 @@ public class User implements Serializable {
 
     @Column(name = "balance")
     private BigDecimal balance;
-
-    @Column(name = "purchase")
-    private Clob purchases;
 }
