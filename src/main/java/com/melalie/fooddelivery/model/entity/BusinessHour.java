@@ -10,24 +10,30 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "menu")
+@Table(name = "restaurant_schedule")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Menu implements Serializable {
+public class BusinessHour implements Serializable {
 
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "price")
-    private double price;
-
     @Column(name = "restaurant_id")
     private String restaurantId;
+
+    @Column(name = "restaurant_name")
+    private String restaurantName;
+
+    @Column(name = "day")
+    private String day;
+
+    @Column(name = "from_time")
+    private String fromTime;
+
+    @Column(name = "to_time")
+    private String toTime;
 }

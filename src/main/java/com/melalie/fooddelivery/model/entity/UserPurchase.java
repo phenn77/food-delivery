@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "user_purchase")
@@ -32,8 +33,8 @@ public class UserPurchase implements Serializable {
     private double amount;
 
     @Column(name = "date")
-    private String date;
+    private Timestamp date;
 
-    @Column(name = "user")
-    private String user;
+    @Column(name = "user_id")
+    private String userId;
 }

@@ -1,12 +1,12 @@
 package com.melalie.fooddelivery.model.response;
 
-import com.melalie.fooddelivery.model.entity.UserPurchase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -16,5 +16,6 @@ import java.util.List;
 public class TransactionByUserResponse implements Serializable {
 
     private String name;
-    private List<UserPurchase> userPurchases;
+    private BigDecimal totalSpent;
+    private List<Purchase> userPurchases;
 }

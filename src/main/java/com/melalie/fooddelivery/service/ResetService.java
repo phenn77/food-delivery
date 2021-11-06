@@ -18,8 +18,12 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Log4j2
 @Service
@@ -72,9 +76,13 @@ public class ResetService {
 
         List<Restaurant> restaurantList = new ArrayList<>();
         List<Menu> restaurantMenu = new ArrayList<>();
+
         restaurantData.forEach(
                 data -> {
+                    String restaurantId = UUID.randomUUID().toString();
+
                     Restaurant restaurant = Restaurant.builder()
+                            .id(restaurantId)
                             .name(data.getName())
                             .location(data.getLocation())
                             .balance(new BigDecimal(data.getBalance()))
@@ -87,7 +95,7 @@ public class ResetService {
                                 Menu menu = Menu.builder()
                                         .name(rawData.getName())
                                         .price(Double.parseDouble(rawData.getPrice()))
-                                        .restaurantName(data.getName())
+                                        .restaurantId(restaurantId)
                                         .build();
 
                                 restaurantMenu.add(menu);
@@ -119,7 +127,10 @@ public class ResetService {
         List<UserPurchase> userPurchases = new ArrayList<>();
 
         userData.forEach(data -> {
+            String userId = UUID.randomUUID().toString();
+
                     User user = User.builder()
+                            .id(userId)
                             .name(data.getName())
                             .location(data.getLocation())
                             .balance(new BigDecimal(data.getBalance()))
@@ -132,8 +143,8 @@ public class ResetService {
                                         .dish(purchase.getDish())
                                         .restaurantName(purchase.getRestaurantName())
                                         .amount(Double.parseDouble(purchase.getAmount()))
-                                        .date(purchase.getDate())
-                                        .user(data.getName())
+                                        .date(convertDate(purchase.getDate()))
+                                        .userId(userId)
                                         .build();
                                 userPurchases.add(userPurchase);
                             }
@@ -144,5 +155,17 @@ public class ResetService {
         userPurchaseRepository.saveAll(userPurchases);
 
         log.info("Finish inserting Users data. Time finished: {} ms", (System.currentTimeMillis() - currentTime));
+    }
+
+    private Timestamp convertDate(String requestDate) {
+        Date result = new Date();
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss zzz");
+            result = sdf.parse(requestDate);
+        } catch (Exception e) {
+            log.error("Failed to convert date. Payload: {}", requestDate);
+        }
+
+        return new Timestamp(result.getTime());
     }
 }

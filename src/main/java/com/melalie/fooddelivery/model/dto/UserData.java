@@ -18,13 +18,13 @@ public class UserData implements Serializable {
     private String name;
     private String location;
     private String balance;
-    private List<Purchase> purchases;
+    private List<UserPurchaseData> purchases;
 
     @Builder
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class Purchase implements Serializable {
+    public static class UserPurchaseData implements Serializable {
         private String dish;
 
         @JsonProperty(value = "restaurant_name")
