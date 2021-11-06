@@ -1,11 +1,8 @@
 package com.melalie.fooddelivery.service;
 
-import com.melalie.fooddelivery.model.entity.User;
-import com.melalie.fooddelivery.model.entity.UserPurchase;
 import com.melalie.fooddelivery.model.projection.UserPurchaseData;
 import com.melalie.fooddelivery.model.response.TransactionByUserResponse;
 import com.melalie.fooddelivery.repository.UserPurchaseRepository;
-import com.melalie.fooddelivery.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,8 +15,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;

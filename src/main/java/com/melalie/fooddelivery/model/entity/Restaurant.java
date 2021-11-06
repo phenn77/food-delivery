@@ -28,7 +28,4 @@ public class Restaurant implements Serializable {
 
     @Column(name = "balance")
     private BigDecimal balance;
-
-    @Column(name = "business_hours")
-    private String businessHours;
 }
