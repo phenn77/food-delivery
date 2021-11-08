@@ -13,4 +13,6 @@ public interface UserPurchaseData {
     Timestamp getDate();
 
     String getName();
+
+    String getUserId();
 }

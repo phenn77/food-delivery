@@ -1,4 +1,4 @@
-package com.melalie.fooddelivery.model.response;
+package com.melalie.fooddelivery.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

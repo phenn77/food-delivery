@@ -36,4 +36,7 @@ public class BusinessHour implements Serializable {
 
     @Column(name = "to_time")
     private String toTime;
+
+    @Column(name = "open_time")
+    private String openTime;
 }

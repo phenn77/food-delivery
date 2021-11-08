@@ -162,42 +162,46 @@ public class ResetService {
     private void retrieveBusinessHour(String restaurantId, String restaurantName, String businessHours) {
         List<BusinessHour> restBusinessHours = new ArrayList<>();
 
-        String[] temp = businessHours.split("\\|");
-        Arrays.stream(temp)
-                .forEach(value -> {
-                    String[] time = value.split("-");
+        Arrays.stream(businessHours.split("\\|")) // Split by | to retrieve each day
+                .forEach(day -> {
+                    String[] time = day.split("-");
+
+                    //split by ": ", and remove leading n trailing spaces. Result : "2 AM - 5 PM"
+                    String retrieveOpenTime = day.split(": ")[1].trim();
+
                     BusinessHour businessHour = BusinessHour.builder()
                             .restaurantId(restaurantId)
                             .restaurantName(restaurantName)
+                            .openTime(retrieveOpenTime)
                             .fromTime(retrieveTime(time[0]))
                             .toTime(retrieveTime(time[1]))
                             .build();
 
-                    if (value.toLowerCase().contains("sun")) {
+                    if (day.toLowerCase().contains("sun")) {
                         businessHour.setDay(Day.SUNDAY.name());
                     }
 
-                    if (value.toLowerCase().contains("mon")) {
+                    if (day.toLowerCase().contains("mon")) {
                         businessHour.setDay(Day.MONDAY.name());
                     }
 
-                    if (value.toLowerCase().contains("tue")) {
+                    if (day.toLowerCase().contains("tue")) {
                         businessHour.setDay(Day.TUESDAY.name());
                     }
 
-                    if (value.toLowerCase().contains("wed")) {
+                    if (day.toLowerCase().contains("wed")) {
                         businessHour.setDay(Day.WEDNESDAY.name());
                     }
 
-                    if (value.toLowerCase().contains("thu")) {
+                    if (day.toLowerCase().contains("thu")) {
                         businessHour.setDay(Day.THURSDAY.name());
                     }
 
-                    if (value.toLowerCase().contains("fri")) {
+                    if (day.toLowerCase().contains("fri")) {
                         businessHour.setDay(Day.FRIDAY.name());
                     }
 
-                    if (value.toLowerCase().contains("sat")) {
+                    if (day.toLowerCase().contains("sat")) {
                         businessHour.setDay(Day.SATURDAY.name());
                     }
 

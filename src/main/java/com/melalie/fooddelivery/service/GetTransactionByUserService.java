@@ -1,7 +1,7 @@
 package com.melalie.fooddelivery.service;
 
 import com.melalie.fooddelivery.model.projection.UserPurchaseData;
-import com.melalie.fooddelivery.model.response.Purchase;
+import com.melalie.fooddelivery.model.dto.Purchase;
 import com.melalie.fooddelivery.model.response.TransactionByUserResponse;
 import com.melalie.fooddelivery.repository.UserPurchaseRepository;
 import lombok.extern.log4j.Log4j2;
@@ -15,18 +15,29 @@ import java.util.stream.Collectors;
 
 @Log4j2
 @Service
-public class GetTransactionsByUserService {
+public class GetTransactionByUserService {
 
     private UserPurchaseRepository userPurchaseRepository;
 
-    public GetTransactionsByUserService(UserPurchaseRepository userPurchaseRepository) {
+    public GetTransactionByUserService(UserPurchaseRepository userPurchaseRepository) {
         this.userPurchaseRepository = userPurchaseRepository;
     }
 
-    public TransactionByUserResponse execute(String userId) {
-        List<UserPurchaseData> userData = userPurchaseRepository.findByUserId(userId);
+    public TransactionByUserResponse execute(String userId, String name) {
+        if (StringUtils.isBlank(userId) && StringUtils.isBlank(name)) {
+            log.error("Request is empty. User ID : {}, Name: {}", userId, name);
+            return null;
+        }
+
+        List<UserPurchaseData> userData;
+        if (StringUtils.isNotBlank(userId)) {
+            userData = userPurchaseRepository.findByUserId(userId);
+        } else {
+            userData = userPurchaseRepository.findByUserName(name);
+        }
 
         if (userData.isEmpty()) {
+            log.error("User not found.");
             return null;
         }
 
@@ -35,14 +46,9 @@ public class GetTransactionsByUserService {
                 .mapToDouble(UserPurchaseData::getAmount)
                 .sum();
 
-        String username = userData
-                .stream()
-                .map(UserPurchaseData::getName)
-                .findFirst()
-                .orElse(StringUtils.EMPTY);
-
         return TransactionByUserResponse.builder()
-                .name(username)
+                .id(userData.get(0).getUserId())
+                .name(userData.get(0).getName())
                 .totalSpent(BigDecimal.valueOf(userSpent))
                 .userPurchases(retrieveUserPurchases(userData))
                 .build();
