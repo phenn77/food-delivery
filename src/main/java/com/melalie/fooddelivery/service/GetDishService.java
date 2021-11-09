@@ -3,12 +3,10 @@ package com.melalie.fooddelivery.service;
 import com.melalie.fooddelivery.model.request.DishRequest;
 import com.melalie.fooddelivery.model.response.RestaurantsResponse;
 import com.melalie.fooddelivery.repository.RestaurantRepository;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Log4j2
 @Service
 public class GetDishService {
 

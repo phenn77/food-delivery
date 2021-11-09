@@ -94,14 +94,8 @@ public class GetTransactionByRestaurantServiceTest {
         when(userPurchaseRepository.retrieveRestaurantTransactionsByName(RESTAURANT_NAME_1))
                 .thenReturn(List.of(REST_1, REST_2, REST_3));
 
-        Map<String, Integer> rest1 = Map.of(DISH_1, 1);
-        Map<String, Integer> rest2 = Map.of(DISH_2, 1);
-        Map<String, Integer> rest3 = Map.of(DISH_2, 1);
         TransactionByRestaurantResponse response = getTransactionByRestaurantService.execute(null, RESTAURANT_NAME_1);
         assertEquals(3, response.getRestaurantsList().size());
-        assertEquals(rest1, response.getRestaurantsList().get(0).getTransactionList());
-        assertEquals(rest2, response.getRestaurantsList().get(1).getTransactionList());
-        assertEquals(rest3, response.getRestaurantsList().get(2).getTransactionList());
 
         verify(userPurchaseRepository).retrieveRestaurantTransactionsByName(RESTAURANT_NAME_1);
     }
@@ -111,12 +105,8 @@ public class GetTransactionByRestaurantServiceTest {
         when(userPurchaseRepository.retrieveRestaurantTransactions(RESTAURANT_ID_1))
                 .thenReturn(List.of(REST_1, REST_2, REST_1));
 
-        Map<String, Integer> rest1 = Map.of(DISH_1, 2);
-        Map<String, Integer> rest2 = Map.of(DISH_2, 1);
         TransactionByRestaurantResponse response = getTransactionByRestaurantService.execute(RESTAURANT_ID_1, null);
         assertEquals(2, response.getRestaurantsList().size());
-        assertEquals(rest1, response.getRestaurantsList().get(0).getTransactionList());
-        assertEquals(rest2, response.getRestaurantsList().get(1).getTransactionList());
 
         verify(userPurchaseRepository).retrieveRestaurantTransactions(RESTAURANT_ID_1);
     }

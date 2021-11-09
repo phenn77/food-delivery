@@ -1,9 +1,12 @@
 package com.melalie.fooddelivery.controller;
 
 import com.melalie.fooddelivery.model.request.DishRequest;
+import com.melalie.fooddelivery.model.request.PopularRestaurantRequest;
+import com.melalie.fooddelivery.model.response.PopularRestaurantResponse;
 import com.melalie.fooddelivery.model.response.RestaurantsResponse;
 import com.melalie.fooddelivery.model.response.TransactionByRestaurantResponse;
 import com.melalie.fooddelivery.service.GetDishService;
+import com.melalie.fooddelivery.service.GetPopularRestaurantService;
 import com.melalie.fooddelivery.service.GetTransactionByRestaurantService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.MediaType;
@@ -16,19 +19,30 @@ import javax.validation.Valid;
 public class RestaurantController {
 
     private GetDishService getDishService;
+    private GetPopularRestaurantService getPopularRestaurantService;
     private GetTransactionByRestaurantService getTransactionByRestaurantService;
 
-    public RestaurantController(GetDishService getDishService, GetTransactionByRestaurantService getTransactionByRestaurantService) {
+    public RestaurantController(GetDishService getDishService, GetPopularRestaurantService getPopularRestaurantService, GetTransactionByRestaurantService getTransactionByRestaurantService) {
         this.getDishService = getDishService;
+        this.getPopularRestaurantService = getPopularRestaurantService;
         this.getTransactionByRestaurantService = getTransactionByRestaurantService;
     }
 
     @Operation(
             summary = "Retrieve Restaurants based on Dish Name"
     )
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public RestaurantsResponse getRestaurantsByDish(@Valid @RequestBody DishRequest request) {
         return getDishService.execute(request);
+    }
+
+    @Operation(
+            summary = "Retrieve most popular Restaurants based on total transaction or transaction amount",
+            description = "Choose between 2 parameters in which to return the most popular Restaurants"
+    )
+    @PostMapping(value = "/popular", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public PopularRestaurantResponse getPopularRestaurants(@Valid @RequestBody PopularRestaurantRequest request) {
+        return getPopularRestaurantService.execute(request);
     }
 
     @Operation(

@@ -1,15 +1,14 @@
 package com.melalie.fooddelivery.service;
 
+import com.melalie.fooddelivery.model.dto.Trx;
 import com.melalie.fooddelivery.model.projection.RestaurantTransactionData;
+import com.melalie.fooddelivery.model.response.PopularRestaurantResponse;
 import com.melalie.fooddelivery.model.response.TransactionByRestaurantResponse;
 import com.melalie.fooddelivery.repository.UserPurchaseRepository;
-import lombok.Builder;
-import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -21,12 +20,6 @@ public class GetTransactionByRestaurantService {
 
     public GetTransactionByRestaurantService(UserPurchaseRepository userPurchaseRepository) {
         this.userPurchaseRepository = userPurchaseRepository;
-    }
-
-    @Data
-    private class Trx implements Serializable {
-        private String restaurantName;
-        private Map<String, Integer> dishOrdered;
     }
 
     public TransactionByRestaurantResponse execute(String restaurantId, String restaurantName) {
@@ -59,8 +52,9 @@ public class GetTransactionByRestaurantService {
         }
 
         trxData.forEach(data -> {
-            Trx trx = new Trx();
-            trx.setRestaurantName(data.getRestaurantName());
+            Trx trx = Trx.builder()
+                    .restaurantName(data.getRestaurantName())
+                    .build();
 
             if (!dataContainer.containsKey(data.getRestaurantId())) {
                 trx.setDishOrdered(new HashMap<>());

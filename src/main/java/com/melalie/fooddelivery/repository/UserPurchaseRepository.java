@@ -40,4 +40,10 @@ public interface UserPurchaseRepository extends JpaRepository<UserPurchase, Stri
                     "JOIN menu m ON up.dish = m.name and up.amount = m.price " +
                     "WHERE up.restaurant_name  = :restaurantName")
     List<RestaurantTransactionData> retrieveRestaurantTransactionsByName(String restaurantName);
+
+    @Query(nativeQuery = true, value =
+            "SELECT  m.restaurant_id as restaurantId, up.restaurant_name as restaurantName, up.amount as amount, up.dish " +
+                    "FROM user_purchase up " +
+                    "JOIN menu m ON up.dish = m.name and up.amount = m.price")
+    List<RestaurantTransactionData> retrieveTransactions();
 }
