@@ -28,18 +28,16 @@ public interface UserPurchaseRepository extends JpaRepository<UserPurchase, Stri
     List<UserPurchaseData> findByUserName(String name);
 
     @Query(nativeQuery = true, value =
-            "SELECT up.*, r.name as restaurantName, r.id as restaurantId " +
+            "SELECT up.*, up.restaurant_name as restaurantName, m.restaurant_id AS restaurantId " +
                     "FROM user_purchase up " +
-                    "JOIN restaurant r " +
-                    "ON up.restaurant_name = r.name " +
-                    "WHERE r.id = :restaurantId")
+                    "JOIN menu m ON up.dish = m.name and up.amount = m.price " +
+                    "WHERE m.restaurant_id = :restaurantId")
     List<RestaurantTransactionData> retrieveRestaurantTransactions(String restaurantId);
 
     @Query(nativeQuery = true, value =
-            "SELECT up.*, r.name as restaurantName, r.id as restaurantId " +
+            "SELECT up.*, up.restaurant_name as restaurantName, m.restaurant_id AS restaurantId " +
                     "FROM user_purchase up " +
-                    "JOIN restaurant r " +
-                    "ON up.restaurant_name = r.name " +
-                    "WHERE lower(r.name) like lower(:restaurantName)")
+                    "JOIN menu m ON up.dish = m.name and up.amount = m.price " +
+                    "WHERE up.restaurant_name  = :restaurantName")
     List<RestaurantTransactionData> retrieveRestaurantTransactionsByName(String restaurantName);
 }

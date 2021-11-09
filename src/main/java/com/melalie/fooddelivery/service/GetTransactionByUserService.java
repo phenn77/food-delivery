@@ -9,8 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Comparator;
-import java.util.List;
+import java.math.RoundingMode;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -33,7 +33,8 @@ public class GetTransactionByUserService {
         if (StringUtils.isNotBlank(userId)) {
             userData = userPurchaseRepository.findByUserId(userId);
         } else {
-            userData = userPurchaseRepository.findByUserName(name);
+            String nameParam = "%" + name + "%";
+            userData = userPurchaseRepository.findByUserName(nameParam);
         }
 
         if (userData.isEmpty()) {
@@ -41,29 +42,57 @@ public class GetTransactionByUserService {
             return null;
         }
 
-        double userSpent = userData
-                .stream()
-                .mapToDouble(UserPurchaseData::getAmount)
-                .sum();
 
         return TransactionByUserResponse.builder()
-                .id(userData.get(0).getUserId())
-                .name(userData.get(0).getName())
-                .totalSpent(BigDecimal.valueOf(userSpent))
-                .userPurchases(retrieveUserPurchases(userData))
+                .users(retrieveUserPurchases(userData))
                 .build();
     }
 
-    private List<Purchase> retrieveUserPurchases(List<UserPurchaseData> userPurchasesData) {
-        return userPurchasesData
+    private List<TransactionByUserResponse.UserTrx> retrieveUserPurchases(List<UserPurchaseData> userPurchasesData) {
+        Map<String, List<Purchase>> result = new HashMap<>();
+
+        Map<String, String> userNames = userPurchasesData
                 .stream()
-                .map(data -> Purchase.builder()
-                        .restaurantName(data.getRestaurantName())
-                        .dish(data.getDish())
-                        .amount(data.getAmount())
-                        .date(data.getDate())
-                        .build())
-                .sorted(Comparator.comparing(Purchase::getDate).reversed())
+                .collect(Collectors.toMap(UserPurchaseData::getUserId, UserPurchaseData::getName, (oldValue, newValue) -> newValue));
+
+        userPurchasesData
+                .forEach(data -> {
+                    Purchase purchase = Purchase.builder()
+                            .restaurantName(data.getRestaurantName())
+                            .dish(data.getDish())
+                            .amount(data.getAmount())
+                            .date(data.getDate())
+                            .build();
+
+                    if (!result.containsKey(data.getUserId())) {
+                        result.put(data.getUserId(), new ArrayList<>());
+                    }
+
+                    result.get(data.getUserId()).add(purchase);
+                });
+
+        return result
+                .entrySet()
+                .stream()
+                .map(data -> {
+                    double userSpent = data.getValue()
+                            .stream()
+                            .mapToDouble(Purchase::getAmount)
+                            .sum();
+
+                    return TransactionByUserResponse.UserTrx.builder()
+                            .id(data.getKey())
+                            .name(userNames.get(data.getKey()))
+                            .totalSpent(new BigDecimal(userSpent).setScale(2, RoundingMode.DOWN))
+                            .userPurchases(
+                                    data.getValue()
+                                            .stream()
+                                            .sorted(Comparator.comparing(Purchase::getDate).reversed())
+                                            .collect(Collectors.toList())
+                            )
+                            .build();
+                })
+                .sorted(Comparator.comparing(TransactionByUserResponse.UserTrx::getName))
                 .collect(Collectors.toList());
     }
 }

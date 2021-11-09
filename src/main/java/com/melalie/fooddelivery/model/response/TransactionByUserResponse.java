@@ -16,8 +16,16 @@ import java.util.List;
 @NoArgsConstructor
 public class TransactionByUserResponse implements Serializable {
 
-    private String id;
-    private String name;
-    private BigDecimal totalSpent;
-    private List<Purchase> userPurchases;
+    private List<UserTrx> users;
+
+    @Builder
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UserTrx implements Serializable {
+        private String id;
+        private String name;
+        private BigDecimal totalSpent;
+        private List<Purchase> userPurchases;
+    }
 }

@@ -16,7 +16,9 @@ public class RestaurantController {
         this.getTransactionByRestaurantService = getTransactionByRestaurantService;
     }
 
-    @Operation(summary = "Retrieve Restaurant Transaction based on ID or Name")
+    @Operation(
+            summary = "Retrieve Restaurant Transaction based on ID or Name",
+            description = "Will return 1 data if restaurant ID as search parameter, meanwhile, if used NAME as search parameters, it will return list of restaurant in which the name has the value (case sensitive)")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public TransactionByRestaurantResponse getTransactionByRestaurant(
             @RequestParam(value = "restaurantId", required = false) String restaurantId,

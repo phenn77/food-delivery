@@ -3,10 +3,8 @@ package com.melalie.fooddelivery.service;
 import com.melalie.fooddelivery.model.projection.RestaurantTransactionData;
 import com.melalie.fooddelivery.model.response.TransactionByRestaurantResponse;
 import com.melalie.fooddelivery.repository.UserPurchaseRepository;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -25,11 +23,8 @@ public class GetTransactionByRestaurantService {
         this.userPurchaseRepository = userPurchaseRepository;
     }
 
-    @Builder
     @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    static class Trx implements Serializable {
+    private class Trx implements Serializable {
         private String restaurantName;
         private Map<String, Integer> dishOrdered;
     }
@@ -58,10 +53,14 @@ public class GetTransactionByRestaurantService {
             trxData = userPurchaseRepository.retrieveRestaurantTransactionsByName(restaurantName);
         }
 
+        if (trxData.isEmpty()) {
+            log.error("Data not found.");
+            return new ArrayList<>();
+        }
+
         trxData.forEach(data -> {
-            Trx trx = Trx.builder()
-                    .restaurantName(data.getRestaurantName())
-                    .build();
+            Trx trx = new Trx();
+            trx.setRestaurantName(data.getRestaurantName());
 
             if (!dataContainer.containsKey(data.getRestaurantId())) {
                 trx.setDishOrdered(new HashMap<>());
@@ -91,6 +90,7 @@ public class GetTransactionByRestaurantService {
                         .restaurantName(trx.getValue().getRestaurantName())
                         .transactionList(new TreeMap<>(trx.getValue().getDishOrdered()))
                         .build())
+                .sorted(Comparator.comparing(TransactionByRestaurantResponse.Restaurants::getRestaurantName))
                 .collect(Collectors.toList());
     }
 }

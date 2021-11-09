@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -80,7 +79,7 @@ public class GetTransactionByUserServiceTest {
 
             @Override
             public String getUserId() {
-                return UUID.randomUUID().toString();
+                return USER_ID;
             }
         };
     }
@@ -92,14 +91,14 @@ public class GetTransactionByUserServiceTest {
     }
 
     @Test
-    public void getTransaction_userNotFound_Test() {
-        when(userPurchaseRepository.findByUserName(NAME))
+    public void getTransaction_UserNotFound_Test() {
+        when(userPurchaseRepository.findByUserName(anyString()))
                 .thenReturn(Collections.emptyList());
 
         TransactionByUserResponse response = getTransactionsByUserService.execute(StringUtils.EMPTY, NAME);
         assertNull(response);
 
-        verify(userPurchaseRepository).findByUserName(NAME);
+        verify(userPurchaseRepository).findByUserName(anyString());
     }
 
     @Test
@@ -128,12 +127,12 @@ public class GetTransactionByUserServiceTest {
                 .thenReturn(Arrays.asList(USER_PURCHASE_1, USER_PURCHASE_2, USER_PURCHASE_3));
 
         TransactionByUserResponse response = getTransactionsByUserService.execute(USER_ID, StringUtils.EMPTY);
-        assertEquals(NAME, response.getName());
-        assertEquals(BigDecimal.valueOf(45.00), response.getTotalSpent());
-        assertEquals(3, response.getUserPurchases().size());
-        assertEquals(DISH_2, response.getUserPurchases().get(0).getDish());
-        assertEquals(DISH_1, response.getUserPurchases().get(1).getDish());
-        assertEquals(DISH_3, response.getUserPurchases().get(2).getDish());
+        assertEquals(NAME, response.getUsers().get(0).getName());
+        assertEquals(new BigDecimal("45.00"), response.getUsers().get(0).getTotalSpent());
+        assertEquals(3, response.getUsers().get(0).getUserPurchases().size());
+        assertEquals(DISH_2, response.getUsers().get(0).getUserPurchases().get(0).getDish());
+        assertEquals(DISH_1, response.getUsers().get(0).getUserPurchases().get(1).getDish());
+        assertEquals(DISH_3, response.getUsers().get(0).getUserPurchases().get(2).getDish());
 
         verify(userPurchaseRepository).findByUserId(USER_ID);
     }

@@ -16,7 +16,9 @@ public class UserController {
         this.getTransactionsByUserService = getTransactionsByUserService;
     }
 
-    @Operation(summary = "Retrieve User data based on ID or Name")
+    @Operation(
+            summary = "Retrieve User data based on ID or Name",
+            description = "Will return 1 data if used ID as search parameter, meanwhile, if used NAME as search parameters, it will return list of user in which the name has the value (wildcard search)")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public TransactionByUserResponse getTransactionByUser(
             @RequestParam(value = "userId", required = false) String userId,
