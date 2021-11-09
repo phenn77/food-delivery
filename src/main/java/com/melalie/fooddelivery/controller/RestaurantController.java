@@ -1,19 +1,34 @@
 package com.melalie.fooddelivery.controller;
 
+import com.melalie.fooddelivery.model.request.DishRequest;
+import com.melalie.fooddelivery.model.response.RestaurantsResponse;
 import com.melalie.fooddelivery.model.response.TransactionByRestaurantResponse;
+import com.melalie.fooddelivery.service.GetDishService;
 import com.melalie.fooddelivery.service.GetTransactionByRestaurantService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping(value = "/restaurants")
 public class RestaurantController {
 
+    private GetDishService getDishService;
     private GetTransactionByRestaurantService getTransactionByRestaurantService;
 
-    public RestaurantController(GetTransactionByRestaurantService getTransactionByRestaurantService) {
+    public RestaurantController(GetDishService getDishService, GetTransactionByRestaurantService getTransactionByRestaurantService) {
+        this.getDishService = getDishService;
         this.getTransactionByRestaurantService = getTransactionByRestaurantService;
+    }
+
+    @Operation(
+            summary = "Retrieve Restaurants based on Dish Name"
+    )
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public RestaurantsResponse getRestaurantsByDish(@Valid @RequestBody DishRequest request) {
+        return getDishService.execute(request);
     }
 
     @Operation(
