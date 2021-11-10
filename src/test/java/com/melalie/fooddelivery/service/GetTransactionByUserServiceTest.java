@@ -3,6 +3,7 @@ package com.melalie.fooddelivery.service;
 import com.melalie.fooddelivery.model.projection.UserPurchaseData;
 import com.melalie.fooddelivery.model.response.TransactionByUserResponse;
 import com.melalie.fooddelivery.repository.UserPurchaseRepository;
+import lombok.var;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,8 +18,7 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
@@ -86,8 +86,10 @@ public class GetTransactionByUserServiceTest {
 
     @Test
     public void getTransaction_EmptyParams_Test() {
-        TransactionByUserResponse response = getTransactionsByUserService.execute(null, null);
-        assertNull(response);
+        var thrown = assertThrows(Exception.class, () ->
+                getTransactionsByUserService.execute(null, null)
+        );
+        assertEquals("Payload not complete.", thrown.getMessage());
     }
 
     @Test
@@ -95,14 +97,17 @@ public class GetTransactionByUserServiceTest {
         when(userPurchaseRepository.findByUserName(anyString()))
                 .thenReturn(Collections.emptyList());
 
-        TransactionByUserResponse response = getTransactionsByUserService.execute(StringUtils.EMPTY, NAME);
-        assertNull(response);
+
+        var thrown = assertThrows(Exception.class, () ->
+                getTransactionsByUserService.execute(StringUtils.EMPTY, NAME)
+        );
+        assertEquals("User not found.", thrown.getMessage());
 
         verify(userPurchaseRepository).findByUserName(anyString());
     }
 
     @Test
-    public void getTransaction_Success_Test() {
+    public void getTransaction_Success_Test() throws Exception {
         final String REST_1 = "Orange House";
         final String REST_2 = "34 Grill & Tap";
         final String REST_3 = "76 King";

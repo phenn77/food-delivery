@@ -23,10 +23,10 @@ public class GetTransactionByUserService {
         this.userPurchaseRepository = userPurchaseRepository;
     }
 
-    public TransactionByUserResponse execute(String userId, String name) {
+    public TransactionByUserResponse execute(String userId, String name) throws Exception {
         if (StringUtils.isBlank(userId) && StringUtils.isBlank(name)) {
             log.error("Request is empty. User ID : {}, Name: {}", userId, name);
-            return null;
+            throw new Exception("Payload not complete.");
         }
 
         List<UserPurchaseData> userData;
@@ -39,7 +39,7 @@ public class GetTransactionByUserService {
 
         if (userData.isEmpty()) {
             log.error("User not found.");
-            return null;
+            throw new Exception("User not found.");
         }
 
 

@@ -3,6 +3,7 @@ package com.melalie.fooddelivery.service;
 import com.melalie.fooddelivery.model.projection.RestaurantTransactionData;
 import com.melalie.fooddelivery.model.response.TransactionByRestaurantResponse;
 import com.melalie.fooddelivery.repository.UserPurchaseRepository;
+import lombok.var;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,8 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
@@ -85,12 +85,14 @@ public class GetTransactionByRestaurantServiceTest {
 
     @Test
     public void getTransaction_RequestNotComplete_Test() {
-        TransactionByRestaurantResponse response = getTransactionByRestaurantService.execute(null, null);
-        assertNull(response);
+        var thrown = assertThrows(Exception.class, () ->
+                getTransactionByRestaurantService.execute(null, null)
+        );
+        assertEquals("Payload not complete.", thrown.getMessage());
     }
 
     @Test
-    public void getTransaction_ByName_Test() {
+    public void getTransaction_ByName_Test() throws Exception {
         when(userPurchaseRepository.retrieveRestaurantTransactionsByName(RESTAURANT_NAME_1))
                 .thenReturn(List.of(REST_1, REST_2, REST_3));
 
@@ -101,7 +103,7 @@ public class GetTransactionByRestaurantServiceTest {
     }
 
     @Test
-    public void getTransaction_ById_Test() {
+    public void getTransaction_ById_Test() throws Exception {
         when(userPurchaseRepository.retrieveRestaurantTransactions(RESTAURANT_ID_1))
                 .thenReturn(List.of(REST_1, REST_2, REST_1));
 
@@ -112,7 +114,7 @@ public class GetTransactionByRestaurantServiceTest {
     }
 
     @Test
-    public void getTransaction_EmptyData_Test() {
+    public void getTransaction_EmptyData_Test() throws Exception {
         when(userPurchaseRepository.retrieveRestaurantTransactionsByName(RESTAURANT_NAME_1))
                 .thenReturn(Collections.emptyList());
 

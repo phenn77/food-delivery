@@ -41,7 +41,7 @@ public class RestaurantController {
             description = "Choose between 2 parameters in which to return the most popular Restaurants"
     )
     @PostMapping(value = "/popular", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public PopularRestaurantResponse getPopularRestaurants(@Valid @RequestBody PopularRestaurantRequest request) {
+    public PopularRestaurantResponse getPopularRestaurants(@Valid @RequestBody PopularRestaurantRequest request) throws Exception {
         return getPopularRestaurantService.execute(request);
     }
 
@@ -51,7 +51,7 @@ public class RestaurantController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public TransactionByRestaurantResponse getTransactionByRestaurant(
             @RequestParam(value = "restaurantId", required = false) String restaurantId,
-            @RequestParam(value = "name", required = false) String name) {
+            @RequestParam(value = "name", required = false) String name) throws Exception {
         return getTransactionByRestaurantService.execute(restaurantId, name);
     }
 }

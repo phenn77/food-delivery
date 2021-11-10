@@ -4,6 +4,7 @@ import com.melalie.fooddelivery.model.projection.RestaurantTransactionData;
 import com.melalie.fooddelivery.model.request.PopularRestaurantRequest;
 import com.melalie.fooddelivery.model.response.PopularRestaurantResponse;
 import com.melalie.fooddelivery.repository.UserPurchaseRepository;
+import lombok.var;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,8 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
@@ -47,12 +47,14 @@ public class GetPopularRestaurantServiceTest {
         final PopularRestaurantRequest request = PopularRestaurantRequest.builder()
                 .build();
 
-        PopularRestaurantResponse response = getPopularRestaurantService.execute(request);
-        assertNull(response);
+        var thrown = assertThrows(Exception.class, () ->
+                getPopularRestaurantService.execute(request)
+        );
+        assertEquals("Payload not complete.", thrown.getMessage());
     }
 
     @Test
-    public void getRestaurant_ByTransaction_EmptyData_Test() {
+    public void getRestaurant_ByTransaction_EmptyData_Test() throws Exception {
         final PopularRestaurantRequest request = PopularRestaurantRequest.builder()
                 .byTransaction(true)
                 .build();
@@ -67,7 +69,7 @@ public class GetPopularRestaurantServiceTest {
     }
 
     @Test
-    public void getRestaurant_ByAmount_Test() {
+    public void getRestaurant_ByAmount_Test() throws Exception {
         final String NAME_1 = "338 Cafe";
         final String NAME_2 = "Orange Cafe";
 

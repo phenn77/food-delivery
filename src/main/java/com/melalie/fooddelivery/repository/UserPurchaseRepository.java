@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
@@ -46,4 +48,25 @@ public interface UserPurchaseRepository extends JpaRepository<UserPurchase, Stri
                     "FROM user_purchase up " +
                     "JOIN menu m ON up.dish = m.name and up.amount = m.price")
     List<RestaurantTransactionData> retrieveTransactions();
+
+
+    @Query(nativeQuery = true, value =
+            "SELECT COUNT(*) " +
+                    "FROM " +
+                    "(SELECT user_id, SUM(amount) AS total " +
+                    "FROM user_purchase " +
+                    "WHERE date BETWEEN :fromDate AND :toDate " +
+                    "GROUP BY user_id) PURCHASE " +
+                    "WHERE total <= :amount")
+    Integer getMinTransaction(String fromDate, String toDate, BigDecimal amount);
+
+    @Query(nativeQuery = true, value =
+            "SELECT COUNT(*) " +
+                    "FROM " +
+                    "(SELECT user_id, SUM(amount) AS total " +
+                    "FROM user_purchase " +
+                    "WHERE date BETWEEN :fromDate AND :toDate " +
+                    "GROUP BY user_id) PURCHASE " +
+                    "WHERE total >= :amount")
+    Integer getMaxTransaction(String fromDate, String toDate, BigDecimal amount);
 }

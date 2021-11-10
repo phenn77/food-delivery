@@ -2,7 +2,6 @@ package com.melalie.fooddelivery.service;
 
 import com.melalie.fooddelivery.model.dto.Trx;
 import com.melalie.fooddelivery.model.projection.RestaurantTransactionData;
-import com.melalie.fooddelivery.model.response.PopularRestaurantResponse;
 import com.melalie.fooddelivery.model.response.TransactionByRestaurantResponse;
 import com.melalie.fooddelivery.repository.UserPurchaseRepository;
 import lombok.extern.log4j.Log4j2;
@@ -22,10 +21,11 @@ public class GetTransactionByRestaurantService {
         this.userPurchaseRepository = userPurchaseRepository;
     }
 
-    public TransactionByRestaurantResponse execute(String restaurantId, String restaurantName) {
+    public TransactionByRestaurantResponse execute(String restaurantId, String restaurantName) throws Exception {
         if (StringUtils.isBlank(restaurantId) && StringUtils.isBlank(restaurantName)) {
             log.error("Request empty. Restaurant ID: {}, Name: {}", restaurantId, restaurantName);
-            return null;
+
+            throw new Exception("Payload not complete.");
         }
 
         List<TransactionByRestaurantResponse.Restaurants> restaurantTrx = retrieveTransactions(restaurantId, restaurantName);

@@ -22,9 +22,11 @@ public class GetPopularRestaurantService {
         this.userPurchaseRepository = userPurchaseRepository;
     }
 
-    public PopularRestaurantResponse execute(PopularRestaurantRequest request) {
+    public PopularRestaurantResponse execute(PopularRestaurantRequest request) throws Exception {
         if (Objects.isNull(request.getByTransaction()) && Objects.isNull(request.getByAmount())) {
-            return null;
+            log.error("Both parameters should not be empty.");
+
+            throw new Exception("Payload not complete.");
         }
 
         return PopularRestaurantResponse.builder()
