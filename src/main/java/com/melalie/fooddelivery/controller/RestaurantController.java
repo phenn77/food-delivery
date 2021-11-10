@@ -2,12 +2,15 @@ package com.melalie.fooddelivery.controller;
 
 import com.melalie.fooddelivery.model.request.DishRequest;
 import com.melalie.fooddelivery.model.request.PopularRestaurantRequest;
+import com.melalie.fooddelivery.model.request.SearchRequest;
 import com.melalie.fooddelivery.model.response.PopularRestaurantResponse;
 import com.melalie.fooddelivery.model.response.RestaurantsResponse;
+import com.melalie.fooddelivery.model.response.SearchResponse;
 import com.melalie.fooddelivery.model.response.TransactionByRestaurantResponse;
 import com.melalie.fooddelivery.service.GetDishService;
 import com.melalie.fooddelivery.service.GetPopularRestaurantService;
 import com.melalie.fooddelivery.service.GetTransactionByRestaurantService;
+import com.melalie.fooddelivery.service.SearchService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -21,11 +24,13 @@ public class RestaurantController {
     private GetDishService getDishService;
     private GetPopularRestaurantService getPopularRestaurantService;
     private GetTransactionByRestaurantService getTransactionByRestaurantService;
+    private SearchService searchService;
 
-    public RestaurantController(GetDishService getDishService, GetPopularRestaurantService getPopularRestaurantService, GetTransactionByRestaurantService getTransactionByRestaurantService) {
+    public RestaurantController(GetDishService getDishService, GetPopularRestaurantService getPopularRestaurantService, GetTransactionByRestaurantService getTransactionByRestaurantService, SearchService searchService) {
         this.getDishService = getDishService;
         this.getPopularRestaurantService = getPopularRestaurantService;
         this.getTransactionByRestaurantService = getTransactionByRestaurantService;
+        this.searchService = searchService;
     }
 
     @Operation(
@@ -53,5 +58,14 @@ public class RestaurantController {
             @RequestParam(value = "restaurantId", required = false) String restaurantId,
             @RequestParam(value = "name", required = false) String name) throws Exception {
         return getTransactionByRestaurantService.execute(restaurantId, name);
+    }
+
+    @Operation(
+            summary = "Search for restaurants or dishes by name, ranked by relevance to search term",
+            description = "type should be set either 'restaurant' or 'dish'"
+    )
+    @PostMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public SearchResponse search(@Valid @RequestBody SearchRequest request) throws Exception {
+        return searchService.execute(request);
     }
 }
