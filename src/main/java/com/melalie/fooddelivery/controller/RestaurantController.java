@@ -29,7 +29,7 @@ public class RestaurantController {
     }
 
     @Operation(
-            summary = "Retrieve Restaurants based on Dish Name"
+            summary = "Search for restaurants that has a dish matching search term"
     )
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public RestaurantsResponse getRestaurantsByDish(@Valid @RequestBody DishRequest request) {
@@ -37,7 +37,7 @@ public class RestaurantController {
     }
 
     @Operation(
-            summary = "Retrieve most popular Restaurants based on total transaction or transaction amount",
+            summary = "The most popular restaurants by transaction volume, either by number of transactions or transaction amount",
             description = "Choose between 2 parameters in which to return the most popular Restaurants"
     )
     @PostMapping(value = "/popular", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -46,7 +46,7 @@ public class RestaurantController {
     }
 
     @Operation(
-            summary = "Retrieve Restaurant Transaction based on ID or Name",
+            summary = "List all transactions belonging to a restaurant",
             description = "Will return 1 data if restaurant ID as search parameter, meanwhile, if used NAME as search parameters, it will return list of restaurant in which the name has the value (case sensitive)")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public TransactionByRestaurantResponse getTransactionByRestaurant(

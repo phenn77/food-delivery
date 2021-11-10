@@ -48,7 +48,7 @@ public class GetDishServiceTest {
         when(restaurantRepository.getRestaurantByDish(DISH_NAME))
                 .thenReturn(Collections.emptyList());
 
-        RestaurantsResponse response = getDishService.execute(REQUEST);
+        var response = getDishService.execute(REQUEST);
         assertEquals(DISH_NAME, response.getDishName());
         assertEquals(0, response.getRestaurantList().size());
 
@@ -63,7 +63,7 @@ public class GetDishServiceTest {
         when(restaurantRepository.getRestaurantByDish(DISH_NAME))
                 .thenReturn(List.of(REST_1, REST_2));
 
-        RestaurantsResponse response = getDishService.execute(REQUEST);
+        var response = getDishService.execute(REQUEST);
         assertEquals(DISH_NAME, response.getDishName());
         assertEquals(2, response.getRestaurantList().size());
         assertEquals(REST_1, response.getRestaurantList().get(0));

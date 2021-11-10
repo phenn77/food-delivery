@@ -51,13 +51,13 @@ public class GetTransactionByUserService {
     private List<TransactionByUserResponse.UserTrx> retrieveUserPurchases(List<UserPurchaseData> userPurchasesData) {
         Map<String, List<Purchase>> result = new HashMap<>();
 
-        Map<String, String> userNames = userPurchasesData
+        var userNames = userPurchasesData
                 .stream()
                 .collect(Collectors.toMap(UserPurchaseData::getUserId, UserPurchaseData::getName, (oldValue, newValue) -> newValue));
 
         userPurchasesData
                 .forEach(data -> {
-                    Purchase purchase = Purchase.builder()
+                    var purchase = Purchase.builder()
                             .restaurantName(data.getRestaurantName())
                             .dish(data.getDish())
                             .amount(data.getAmount())
@@ -75,7 +75,7 @@ public class GetTransactionByUserService {
                 .entrySet()
                 .stream()
                 .map(data -> {
-                    double userSpent = data.getValue()
+                    var userSpent = data.getValue()
                             .stream()
                             .mapToDouble(Purchase::getAmount)
                             .sum();

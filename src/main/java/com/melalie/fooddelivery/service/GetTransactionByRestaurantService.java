@@ -28,7 +28,7 @@ public class GetTransactionByRestaurantService {
             throw new Exception("Payload not complete.");
         }
 
-        List<TransactionByRestaurantResponse.Restaurants> restaurantTrx = retrieveTransactions(restaurantId, restaurantName);
+        var restaurantTrx = retrieveTransactions(restaurantId, restaurantName);
 
         return TransactionByRestaurantResponse.builder()
                 .restaurantsList(restaurantTrx)
@@ -52,7 +52,7 @@ public class GetTransactionByRestaurantService {
         }
 
         trxData.forEach(data -> {
-            Trx trx = Trx.builder()
+            var trx = Trx.builder()
                     .restaurantName(data.getRestaurantName())
                     .build();
 
@@ -62,7 +62,7 @@ public class GetTransactionByRestaurantService {
             }
 
             //each restaurants' dishes
-            Map<String, Integer> restDishes = dataContainer.get(data.getRestaurantId()).getDishOrdered();
+            var restDishes = dataContainer.get(data.getRestaurantId()).getDishOrdered();
 
             if (restDishes.containsKey(data.getDish())) {
                 Integer value = restDishes.get(data.getDish());

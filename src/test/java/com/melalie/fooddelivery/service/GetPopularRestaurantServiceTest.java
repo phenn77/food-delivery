@@ -4,7 +4,6 @@ import com.melalie.fooddelivery.model.projection.RestaurantTransactionData;
 import com.melalie.fooddelivery.model.request.PopularRestaurantRequest;
 import com.melalie.fooddelivery.model.response.PopularRestaurantResponse;
 import com.melalie.fooddelivery.repository.UserPurchaseRepository;
-import lombok.var;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
@@ -44,7 +44,7 @@ public class GetPopularRestaurantServiceTest {
 
     @Test
     public void getRestaurant_RequestEmpty_Test() {
-        final PopularRestaurantRequest request = PopularRestaurantRequest.builder()
+        var request = PopularRestaurantRequest.builder()
                 .build();
 
         var thrown = assertThrows(Exception.class, () ->
@@ -55,7 +55,7 @@ public class GetPopularRestaurantServiceTest {
 
     @Test
     public void getRestaurant_ByTransaction_EmptyData_Test() throws Exception {
-        final PopularRestaurantRequest request = PopularRestaurantRequest.builder()
+         var request = PopularRestaurantRequest.builder()
                 .byTransaction(true)
                 .build();
 
@@ -70,11 +70,11 @@ public class GetPopularRestaurantServiceTest {
 
     @Test
     public void getRestaurant_ByAmount_Test() throws Exception {
-        final String NAME_1 = "338 Cafe";
-        final String NAME_2 = "Orange Cafe";
+        var NAME_1 = "338 Cafe";
+        var NAME_2 = "Orange Cafe";
 
-        final String ID_1 = UUID.randomUUID().toString();
-        final String ID_2 = UUID.randomUUID().toString();
+        var ID_1 = UUID.randomUUID().toString();
+        var ID_2 = UUID.randomUUID().toString();
 
         final double AMT_1 = 10.00;
         final double AMT_2 = 30.00;

@@ -3,7 +3,6 @@ package com.melalie.fooddelivery.service;
 import com.melalie.fooddelivery.model.projection.UserPurchaseData;
 import com.melalie.fooddelivery.model.response.TransactionByUserResponse;
 import com.melalie.fooddelivery.repository.UserPurchaseRepository;
-import lombok.var;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +17,8 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 

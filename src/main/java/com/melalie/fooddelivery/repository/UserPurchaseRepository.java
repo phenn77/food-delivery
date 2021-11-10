@@ -3,12 +3,12 @@ package com.melalie.fooddelivery.repository;
 import com.melalie.fooddelivery.model.entity.UserPurchase;
 import com.melalie.fooddelivery.model.projection.RestaurantTransactionData;
 import com.melalie.fooddelivery.model.projection.UserPurchaseData;
+import com.melalie.fooddelivery.model.projection.UserTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
@@ -69,4 +69,14 @@ public interface UserPurchaseRepository extends JpaRepository<UserPurchase, Stri
                     "GROUP BY user_id) PURCHASE " +
                     "WHERE total >= :amount")
     Integer getMaxTransaction(String fromDate, String toDate, BigDecimal amount);
+
+    @Query(nativeQuery = true, value =
+            "SELECT up.user_id, u.name, COUNT(up.*) as totalTransaction, SUM(up.amount) as totalAmount " +
+                    "FROM USER_PURCHASE up " +
+                    "join user u " +
+                    "on up.user_id = u.id " +
+                    "WHERE up.date BETWEEN :fromDate AND :toDate " +
+                    "GROUP BY up.user_id " +
+                    "ORDER BY totalTransaction DESC, u.name LIMIT :totalUser")
+    List<UserTransaction> getUsersTransaction(String fromDate, String toDate, Integer totalUser);
 }

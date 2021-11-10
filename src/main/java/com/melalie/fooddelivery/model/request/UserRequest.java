@@ -15,6 +15,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class UserRequest implements Serializable {
 
+    private Integer totalUser;
+
     private BigDecimal transactionAmount;
 
     @NotNull
