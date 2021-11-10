@@ -1,6 +1,7 @@
 package com.melalie.fooddelivery.repository;
 
 import com.melalie.fooddelivery.model.entity.Restaurant;
+import com.melalie.fooddelivery.model.projection.RestaurantSchedule;
 import com.melalie.fooddelivery.model.projection.SearchData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -32,4 +33,13 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, String> 
                     "ON m.restaurant_id = r.id " +
                     "WHERE LOWER(m.name) like :keyword ORDER BY r.name")
     List<SearchData> searchByDish(String keyword);
+
+    @Query(nativeQuery = true, value =
+            "SELECT r.name, rs.open_time AS openTime " +
+                    "FROM restaurant r " +
+                    "JOIN restaurant_schedule rs " +
+                    "ON r.id = rs.restaurant_id " +
+                    "WHERE rs.day = :day AND rs.from_time > :opensAt " +
+                    "ORDER BY rs.from_time asc, r.name")
+    List<RestaurantSchedule> getOpenedRestaurant(String day, String opensAt);
 }

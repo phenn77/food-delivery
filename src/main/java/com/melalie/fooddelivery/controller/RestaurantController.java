@@ -1,16 +1,11 @@
 package com.melalie.fooddelivery.controller;
 
 import com.melalie.fooddelivery.model.request.DishRequest;
+import com.melalie.fooddelivery.model.request.OpenedRestaurantRequest;
 import com.melalie.fooddelivery.model.request.PopularRestaurantRequest;
 import com.melalie.fooddelivery.model.request.SearchRequest;
-import com.melalie.fooddelivery.model.response.PopularRestaurantResponse;
-import com.melalie.fooddelivery.model.response.RestaurantsResponse;
-import com.melalie.fooddelivery.model.response.SearchResponse;
-import com.melalie.fooddelivery.model.response.TransactionByRestaurantResponse;
-import com.melalie.fooddelivery.service.GetDishService;
-import com.melalie.fooddelivery.service.GetPopularRestaurantService;
-import com.melalie.fooddelivery.service.GetTransactionByRestaurantService;
-import com.melalie.fooddelivery.service.SearchService;
+import com.melalie.fooddelivery.model.response.*;
+import com.melalie.fooddelivery.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +17,14 @@ import javax.validation.Valid;
 public class RestaurantController {
 
     private GetDishService getDishService;
+    private GetOpenRestaurantService getOpenRestaurantService;
     private GetPopularRestaurantService getPopularRestaurantService;
     private GetTransactionByRestaurantService getTransactionByRestaurantService;
     private SearchService searchService;
 
-    public RestaurantController(GetDishService getDishService, GetPopularRestaurantService getPopularRestaurantService, GetTransactionByRestaurantService getTransactionByRestaurantService, SearchService searchService) {
+    public RestaurantController(GetDishService getDishService, GetOpenRestaurantService getOpenRestaurantService, GetPopularRestaurantService getPopularRestaurantService, GetTransactionByRestaurantService getTransactionByRestaurantService, SearchService searchService) {
         this.getDishService = getDishService;
+        this.getOpenRestaurantService = getOpenRestaurantService;
         this.getPopularRestaurantService = getPopularRestaurantService;
         this.getTransactionByRestaurantService = getTransactionByRestaurantService;
         this.searchService = searchService;
@@ -48,6 +45,15 @@ public class RestaurantController {
     @PostMapping(value = "/popular", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public PopularRestaurantResponse getPopularRestaurants(@Valid @RequestBody PopularRestaurantRequest request) throws Exception {
         return getPopularRestaurantService.execute(request);
+    }
+
+    @Operation(
+            summary = "List all restaurants that are open at a certain datetime",
+            description = "format should be in 'yyyy-MM-dd HH:mm:ss'. Example : 2021-11-10 14:00:00"
+    )
+    @PostMapping(value = "/schedule", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public OpenedRestaurantResponse getOpenedRestaurant(@Valid @RequestBody OpenedRestaurantRequest request) throws Exception {
+        return getOpenRestaurantService.execute(request);
     }
 
     @Operation(

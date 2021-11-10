@@ -28,7 +28,8 @@ public class UserController {
     }
 
     @Operation(
-            summary = "The top x users by total transaction amount within a date range"
+            summary = "The top x users by total transaction amount within a date range",
+            description = "fromDate and toDate type is 'yyyy-MM-dd'. Example : 2021-05-20"
     )
     @PostMapping(value = "/top", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public TopUsersResponse getTopUsers(@Valid @RequestBody UserRequest request) throws Exception {
@@ -47,7 +48,7 @@ public class UserController {
 
     @Operation(
             summary = "Total number of users who made transactions above or below $v within a date range",
-            description = "fromDate and toDate type is yyyy-MM-dd. Example : 2021-05-20"
+            description = "fromDate and toDate type is 'yyyy-MM-dd'. Example : 2021-05-20"
     )
     @PostMapping(value = "/transaction", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserByDateResponse getUsersTransaction(@Valid @RequestBody UserRequest request) throws Exception {

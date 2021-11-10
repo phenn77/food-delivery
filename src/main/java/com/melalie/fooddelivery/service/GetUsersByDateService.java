@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.melalie.fooddelivery.util.constant.CommonUtils.formatDate;
+import static com.melalie.fooddelivery.util.constant.Constants.YYYYMMDD;
+import static com.melalie.fooddelivery.util.constant.Constants.YYYYMMDDHHMMSS;
 
 @Log4j2
 @Service
@@ -35,8 +37,8 @@ public class GetUsersByDateService {
     private UserByDateResponse retrieveData(UserRequest request) throws Exception {
         Map<String, Integer> users = new HashMap<>();
 
-        var fromDate = formatDate(request.getFromDate());
-        var toDate = formatDate(request.getToDate());
+        var fromDate = formatDate(request.getFromDate(), YYYYMMDD, YYYYMMDDHHMMSS);
+        var toDate = formatDate(request.getToDate(), YYYYMMDD, YYYYMMDDHHMMSS);
 
         var usersWithMin = userPurchaseRepository.getMinTransaction(fromDate, toDate, request.getTransactionAmount());
         users.put("Below", usersWithMin);

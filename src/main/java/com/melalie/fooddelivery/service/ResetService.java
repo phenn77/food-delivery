@@ -164,10 +164,10 @@ public class ResetService {
 
         Arrays.stream(businessHours.split("\\|")) // Split by | to retrieve each day
                 .forEach(day -> {
-                    String[] time = day.split("-");
 
                     //split by ": ", and remove leading n trailing spaces. Result : "2 AM - 5 PM"
                     String retrieveOpenTime = day.split(": ")[1].trim();
+                    String[] time = retrieveOpenTime.split("-");
 
                     BusinessHour businessHour = BusinessHour.builder()
                             .restaurantId(restaurantId)
@@ -225,7 +225,9 @@ public class ResetService {
                 time = String.valueOf(night + 1200);
             }
 
-            time = time.replace("24", "00");
+            time = time.replace("24", "12");
+        } else {
+            time = time.replace("12", "00");
         }
 
         if (time.length() == 3) {

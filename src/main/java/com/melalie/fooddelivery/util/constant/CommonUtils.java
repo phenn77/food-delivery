@@ -12,9 +12,9 @@ public class CommonUtils {
 
     }
 
-    public static String formatDate(String payload) throws Exception {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static String formatDate(String payload, String oldFormat, String format) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat(oldFormat);
+        SimpleDateFormat newFormat = new SimpleDateFormat(format);
 
         try {
             Date date = sdf.parse(payload);
