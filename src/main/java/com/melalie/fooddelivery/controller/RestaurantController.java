@@ -1,9 +1,6 @@
 package com.melalie.fooddelivery.controller;
 
-import com.melalie.fooddelivery.model.request.DishRequest;
-import com.melalie.fooddelivery.model.request.OpenedRestaurantRequest;
-import com.melalie.fooddelivery.model.request.PopularRestaurantRequest;
-import com.melalie.fooddelivery.model.request.SearchRequest;
+import com.melalie.fooddelivery.model.request.*;
 import com.melalie.fooddelivery.model.response.*;
 import com.melalie.fooddelivery.service.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,13 +16,15 @@ public class RestaurantController {
     private GetDishService getDishService;
     private GetOpenRestaurantService getOpenRestaurantService;
     private GetPopularRestaurantService getPopularRestaurantService;
+    private GetRestaurantHourService getRestaurantHourService;
     private GetTransactionByRestaurantService getTransactionByRestaurantService;
     private SearchService searchService;
 
-    public RestaurantController(GetDishService getDishService, GetOpenRestaurantService getOpenRestaurantService, GetPopularRestaurantService getPopularRestaurantService, GetTransactionByRestaurantService getTransactionByRestaurantService, SearchService searchService) {
+    public RestaurantController(GetDishService getDishService, GetOpenRestaurantService getOpenRestaurantService, GetPopularRestaurantService getPopularRestaurantService, GetRestaurantHourService getRestaurantHourService, GetTransactionByRestaurantService getTransactionByRestaurantService, SearchService searchService) {
         this.getDishService = getDishService;
         this.getOpenRestaurantService = getOpenRestaurantService;
         this.getPopularRestaurantService = getPopularRestaurantService;
+        this.getRestaurantHourService = getRestaurantHourService;
         this.getTransactionByRestaurantService = getTransactionByRestaurantService;
         this.searchService = searchService;
     }
@@ -57,6 +56,15 @@ public class RestaurantController {
     }
 
     @Operation(
+            summary = "List all restaurants that are open for x-z hours per day or week",
+            description = "type must be either [day] or [week]"
+    )
+    @PostMapping(value = "/open", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public OpenedRestaurantResponse getOpenedRestaurantByHour(@Valid @RequestBody RestaurantHourRequest request) throws Exception {
+        return getRestaurantHourService.execute(request);
+    }
+
+    @Operation(
             summary = "List all transactions belonging to a restaurant",
             description = "Will return 1 data if restaurant ID as search parameter, meanwhile, if used NAME as search parameters, it will return list of restaurant in which the name has the value (case sensitive)")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -68,7 +76,7 @@ public class RestaurantController {
 
     @Operation(
             summary = "Search for restaurants or dishes by name, ranked by relevance to search term",
-            description = "type should be set either 'restaurant' or 'dish'"
+            description = "type should be set either [restaurant] or [dish]"
     )
     @PostMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public SearchResponse search(@Valid @RequestBody SearchRequest request) throws Exception {

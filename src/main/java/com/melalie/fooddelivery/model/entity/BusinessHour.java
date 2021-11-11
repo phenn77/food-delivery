@@ -8,9 +8,10 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Entity
-@Table(name = "restaurant_schedule")
+@Table(name = "restaurant_business_hour")
 @Data
 @Builder
 @AllArgsConstructor
@@ -39,4 +40,7 @@ public class BusinessHour implements Serializable {
 
     @Column(name = "open_time")
     private String openTime;
+
+    @Column(name = "hours")
+    private Integer hours;
 }

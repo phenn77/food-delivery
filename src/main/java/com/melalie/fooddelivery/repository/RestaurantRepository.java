@@ -35,11 +35,11 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, String> 
     List<SearchData> searchByDish(String keyword);
 
     @Query(nativeQuery = true, value =
-            "SELECT r.name, rs.open_time AS openTime " +
+            "SELECT r.name, rbh.open_time AS openTime " +
                     "FROM restaurant r " +
-                    "JOIN restaurant_schedule rs " +
+                    "JOIN restaurant_business_hour rbh " +
                     "ON r.id = rs.restaurant_id " +
-                    "WHERE rs.day = :day AND rs.from_time > :opensAt " +
-                    "ORDER BY rs.from_time asc, r.name")
+                    "WHERE rbh.day = :day AND rbh.from_time > :opensAt " +
+                    "ORDER BY rbh.from_time asc, r.name")
     List<RestaurantSchedule> getOpenedRestaurant(String day, String opensAt);
 }

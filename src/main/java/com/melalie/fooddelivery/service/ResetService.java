@@ -17,6 +17,9 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Log4j2
@@ -169,12 +172,16 @@ public class ResetService {
                     String retrieveOpenTime = day.split(": ")[1].trim();
                     String[] time = retrieveOpenTime.split("-");
 
+                    String fromTime = retrieveTime(time[0]);
+                    String toTime = retrieveTime(time[1]);
+
                     BusinessHour businessHour = BusinessHour.builder()
                             .restaurantId(restaurantId)
                             .restaurantName(restaurantName)
                             .openTime(retrieveOpenTime)
-                            .fromTime(retrieveTime(time[0]))
-                            .toTime(retrieveTime(time[1]))
+                            .fromTime(fromTime)
+                            .toTime(toTime)
+                            .hours(getRestaurantHours(time[0], time[1]))
                             .build();
 
                     if (day.toLowerCase().contains("sun")) {
@@ -211,6 +218,33 @@ public class ResetService {
         businessHourRepository.saveAll(restBusinessHours);
     }
 
+    private Integer getRestaurantHours(String fromTime, String toTime) {
+        fromTime = StringUtils.trim(fromTime);
+        toTime = StringUtils.trim(toTime);
+
+        LocalTime fromDate;
+        LocalTime toDate;
+
+        DateTimeFormatter defaultFormat = DateTimeFormatter.ofPattern("[hh:mm a]" + "[h:mm a]" + "[h a]" + "[hh a]");
+        try {
+            fromDate = LocalTime.parse(fromTime, defaultFormat);
+            toDate = LocalTime.parse(toTime, defaultFormat);
+        } catch (Exception e) {
+            log.error("Failed to parse date. Error: {}", (Object) ExceptionUtils.getRootCauseStackTrace(e));
+
+            fromDate = LocalTime.now();
+            toDate = LocalTime.now();
+        }
+        Duration dur = Duration.between(fromDate, toDate);
+
+        long hours = dur.toHours();
+        if (hours < 0) {
+            hours += 24;
+        }
+
+        return (int) hours;
+    }
+
     public String retrieveTime(String time) {
         time = StringUtils.replace(time, ":", StringUtils.EMPTY);
         boolean timeIsPM = StringUtils.containsIgnoreCase(time, "PM");
@@ -224,10 +258,6 @@ public class ResetService {
             } else {
                 time = String.valueOf(night + 1200);
             }
-
-            time = time.replace("24", "12");
-        } else {
-            time = time.replace("12", "00");
         }
 
         if (time.length() == 3) {
