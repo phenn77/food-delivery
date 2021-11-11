@@ -1,9 +1,12 @@
 package com.melalie.fooddelivery.controller;
 
+import com.melalie.fooddelivery.model.request.CreatePurchaseRequest;
 import com.melalie.fooddelivery.model.request.UserRequest;
+import com.melalie.fooddelivery.model.response.CreatePurchaseResponse;
 import com.melalie.fooddelivery.model.response.TopUsersResponse;
 import com.melalie.fooddelivery.model.response.TransactionByUserResponse;
 import com.melalie.fooddelivery.model.response.UserByDateResponse;
+import com.melalie.fooddelivery.service.CreatePurchaseService;
 import com.melalie.fooddelivery.service.GetTopUsersService;
 import com.melalie.fooddelivery.service.GetTransactionByUserService;
 import com.melalie.fooddelivery.service.GetUsersByDateService;
@@ -17,14 +20,24 @@ import javax.validation.Valid;
 @RequestMapping("/users")
 public class UserController {
 
+    private CreatePurchaseService createPurchaseService;
     private GetTopUsersService getTopUsersService;
     private GetTransactionByUserService getTransactionsByUserService;
     private GetUsersByDateService getUsersByDateService;
 
-    public UserController(GetTopUsersService getTopUsersService, GetTransactionByUserService getTransactionsByUserService, GetUsersByDateService getUsersByDateService) {
+    public UserController(CreatePurchaseService createPurchaseService, GetTopUsersService getTopUsersService, GetTransactionByUserService getTransactionsByUserService, GetUsersByDateService getUsersByDateService) {
+        this.createPurchaseService = createPurchaseService;
         this.getTopUsersService = getTopUsersService;
         this.getTransactionsByUserService = getTransactionsByUserService;
         this.getUsersByDateService = getUsersByDateService;
+    }
+
+    @Operation(
+            summary = "Process a user purchase"
+    )
+    @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public CreatePurchaseResponse create(@Valid @RequestBody CreatePurchaseRequest request) throws Exception {
+        return createPurchaseService.execute(request);
     }
 
     @Operation(

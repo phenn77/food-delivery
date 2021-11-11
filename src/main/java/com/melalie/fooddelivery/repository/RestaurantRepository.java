@@ -2,6 +2,7 @@ package com.melalie.fooddelivery.repository;
 
 import com.melalie.fooddelivery.model.entity.Restaurant;
 import com.melalie.fooddelivery.model.projection.RestaurantSchedule;
+import com.melalie.fooddelivery.model.projection.RestaurantTransactionData;
 import com.melalie.fooddelivery.model.projection.SearchData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

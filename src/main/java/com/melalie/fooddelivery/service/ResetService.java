@@ -45,7 +45,7 @@ public class ResetService {
     public void execute() {
         long currentTime = System.currentTimeMillis();
 
-        log.info("Start resetting and reinsert data");
+        log.info("Start inserting data");
 
         retrieveRestaurantData();
         retrieveUserData();
@@ -135,7 +135,7 @@ public class ResetService {
                         UserPurchase userPurchase = UserPurchase.builder()
                                 .dish(purchase.getDish())
                                 .restaurantName(purchase.getRestaurantName())
-                                .amount(Double.parseDouble(purchase.getAmount()))
+                                .amount(new BigDecimal(purchase.getAmount()))
                                 .date(convertDate(purchase.getDate()))
                                 .userId(userId)
                                 .build();

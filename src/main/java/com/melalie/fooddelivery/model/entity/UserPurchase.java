@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 @Entity
@@ -30,7 +31,7 @@ public class UserPurchase implements Serializable {
     private String restaurantName;
 
     @Column(name = "amount")
-    private double amount;
+    private BigDecimal amount;
 
     @Column(name = "date")
     private Timestamp date;
