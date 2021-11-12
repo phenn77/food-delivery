@@ -74,7 +74,7 @@ public class CreatePurchaseService {
     private Map<String, BigDecimal> retrieveMenuWithPrice(List<Menu> menu) {
         return menu
                 .stream()
-                .collect(Collectors.toMap(Menu::getId, y -> BigDecimal.valueOf(y.getPrice()).setScale(2, RoundingMode.DOWN)));
+                .collect(Collectors.toMap(Menu::getId, Menu::getPrice));
     }
 
     private Map<String, String> retrieveMenuWithName(List<Menu> menu) {

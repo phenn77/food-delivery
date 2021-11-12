@@ -53,7 +53,7 @@ public class GetTransactionByUserService {
 
         var userNames = userPurchasesData
                 .stream()
-                .collect(Collectors.toMap(UserPurchaseData::getUserId, UserPurchaseData::getName, (oldValue, newValue) -> newValue));
+                .collect(Collectors.toMap(UserPurchaseData::getUserId, UserPurchaseData::getName, (oldValue, newValue) -> oldValue));
 
         userPurchasesData
                 .forEach(data -> {

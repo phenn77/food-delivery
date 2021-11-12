@@ -16,14 +16,16 @@ public class RestaurantController {
     private GetDishService getDishService;
     private GetOpenRestaurantService getOpenRestaurantService;
     private GetPopularRestaurantService getPopularRestaurantService;
+    private GetRestaurantDishesService getRestaurantDishesService;
     private GetRestaurantHourService getRestaurantHourService;
     private GetTransactionByRestaurantService getTransactionByRestaurantService;
     private SearchService searchService;
 
-    public RestaurantController(GetDishService getDishService, GetOpenRestaurantService getOpenRestaurantService, GetPopularRestaurantService getPopularRestaurantService, GetRestaurantHourService getRestaurantHourService, GetTransactionByRestaurantService getTransactionByRestaurantService, SearchService searchService) {
+    public RestaurantController(GetDishService getDishService, GetOpenRestaurantService getOpenRestaurantService, GetPopularRestaurantService getPopularRestaurantService, GetRestaurantDishesService getRestaurantDishesService, GetRestaurantHourService getRestaurantHourService, GetTransactionByRestaurantService getTransactionByRestaurantService, SearchService searchService) {
         this.getDishService = getDishService;
         this.getOpenRestaurantService = getOpenRestaurantService;
         this.getPopularRestaurantService = getPopularRestaurantService;
+        this.getRestaurantDishesService = getRestaurantDishesService;
         this.getRestaurantHourService = getRestaurantHourService;
         this.getTransactionByRestaurantService = getTransactionByRestaurantService;
         this.searchService = searchService;
@@ -53,6 +55,14 @@ public class RestaurantController {
     @PostMapping(value = "/schedule", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public OpenedRestaurantResponse getOpenedRestaurant(@Valid @RequestBody OpenedRestaurantRequest request) throws Exception {
         return getOpenRestaurantService.execute(request);
+    }
+
+    @Operation(
+            summary = "List all restaurants that have x-z number of dishes within a price range"
+    )
+    @PostMapping(value = "/dish", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public RestaurantDishesResponse getRestaurantDishes(@Valid @RequestBody RestaurantDishesRequest request) throws Exception {
+        return getRestaurantDishesService.execute(request);
     }
 
     @Operation(

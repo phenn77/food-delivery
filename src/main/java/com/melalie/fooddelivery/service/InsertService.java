@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -24,25 +25,26 @@ import java.util.*;
 
 @Log4j2
 @Service
-public class ResetService {
+@Transactional
+public class InsertService {
 
     private BusinessHourRepository businessHourRepository;
     private MenuRepository menuRepository;
     private RestaurantRepository restaurantRepository;
     private UserPurchaseRepository userPurchaseRepository;
     private UserRepository userRepository;
+    private ObjectMapper objectMapper;
 
-    public ResetService(BusinessHourRepository businessHourRepository, MenuRepository menuRepository, RestaurantRepository restaurantRepository, UserPurchaseRepository userPurchaseRepository, UserRepository userRepository) {
+    public InsertService(BusinessHourRepository businessHourRepository, MenuRepository menuRepository, RestaurantRepository restaurantRepository, UserPurchaseRepository userPurchaseRepository, UserRepository userRepository, ObjectMapper objectMapper) {
         this.businessHourRepository = businessHourRepository;
         this.menuRepository = menuRepository;
         this.restaurantRepository = restaurantRepository;
         this.userPurchaseRepository = userPurchaseRepository;
         this.userRepository = userRepository;
+        this.objectMapper = objectMapper;
     }
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    public void execute() {
+    public void execute() throws Exception {
         long currentTime = System.currentTimeMillis();
 
         log.info("Start inserting data");
@@ -53,14 +55,15 @@ public class ResetService {
         log.info("Data insertion took : {} s", Math.ceil((double) (System.currentTimeMillis() - currentTime) / 1000));
     }
 
-    private void retrieveRestaurantData() {
-        List<RestaurantData> restaurantData = new ArrayList<>();
-
+    private void retrieveRestaurantData() throws Exception {
+        List<RestaurantData> restaurantData;
         try {
             restaurantData = objectMapper.readValue(new File("src/main/resources/restaurants.json"), new TypeReference<>() {
             });
         } catch (Exception e) {
             log.error("Failed to retrieve Restaurants data. Error: {}", (Object) ExceptionUtils.getRootCauseStackTrace(e));
+
+            throw new Exception("Process data failed.");
         }
 
         long currentTime = System.currentTimeMillis();
@@ -86,7 +89,7 @@ public class ResetService {
                                 rawData -> {
                                     Menu menu = Menu.builder()
                                             .name(rawData.getName())
-                                            .price(Double.parseDouble(rawData.getPrice()))
+                                            .price(new BigDecimal(rawData.getPrice()))
                                             .restaurantId(restaurantId)
                                             .build();
 
@@ -99,20 +102,24 @@ public class ResetService {
                 });
 
         //Save all data without looping
-        restaurantRepository.saveAll(restaurantList);
-        menuRepository.saveAll(restaurantMenu);
+        if (!restaurantList.isEmpty() && !restaurantMenu.isEmpty()) {
+            restaurantRepository.saveAll(restaurantList);
+            menuRepository.saveAll(restaurantMenu);
+        }
 
         log.info("Finish inserting {} Restaurants data. Time finished: {} s", restaurantList.size(), Math.ceil((double) (System.currentTimeMillis() - currentTime) / 1000));
     }
 
-    private void retrieveUserData() {
-        List<UserData> userData = new ArrayList<>();
+    private void retrieveUserData() throws Exception {
+        List<UserData> userData;
 
         try {
             userData = objectMapper.readValue(new File("src/main/resources/users.json"), new TypeReference<>() {
             });
         } catch (Exception e) {
             log.error("Failed to retrieve Restaurants data. Error: {}", (Object) ExceptionUtils.getRootCauseStackTrace(e));
+
+            throw new Exception("Process data failed.");
         }
 
         long currentTime = System.currentTimeMillis();
@@ -144,19 +151,23 @@ public class ResetService {
             );
         });
 
-        userRepository.saveAll(userList);
-        userPurchaseRepository.saveAll(userPurchases);
+        if (!userList.isEmpty() && !userPurchases.isEmpty()) {
+            userRepository.saveAll(userList);
+            userPurchaseRepository.saveAll(userPurchases);
+        }
 
         log.info("Finish inserting {} Users data. Time finished: {} s", userList.size(), Math.ceil((double) (System.currentTimeMillis() - currentTime) / 1000));
     }
 
     private Timestamp convertDate(String requestDate) {
-        Date result = new Date();
+        Date result;
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss zzz");
             result = sdf.parse(requestDate);
         } catch (Exception e) {
             log.error("Failed to convert date. Payload: {}", requestDate);
+
+            result = new Date();
         }
 
         return new Timestamp(result.getTime());
@@ -245,7 +256,7 @@ public class ResetService {
         return (int) hours;
     }
 
-    public String retrieveTime(String time) {
+    private String retrieveTime(String time) {
         time = StringUtils.replace(time, ":", StringUtils.EMPTY);
         boolean timeIsPM = StringUtils.containsIgnoreCase(time, "PM");
         time = time.replaceAll("\\D+", StringUtils.EMPTY);

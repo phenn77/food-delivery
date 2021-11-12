@@ -90,7 +90,7 @@ public class CreatePurchaseServiceTest {
     final static Menu MENU = Menu.builder()
             .id(MENU_ID)
             .name("Steak")
-            .price(12.00)
+            .price(new BigDecimal("12"))
             .build();
 
     @Test
@@ -167,7 +167,7 @@ public class CreatePurchaseServiceTest {
         assertEquals(1, response.getPurchases().size());
         assertEquals("Steak", response.getPurchases().get(0).getName());
         assertEquals(2, response.getPurchases().get(0).getQuantity());
-        assertEquals(new BigDecimal("24").setScale(2, RoundingMode.DOWN), response.getPurchases().get(0).getAmount());
+        assertEquals(new BigDecimal("24"), response.getPurchases().get(0).getAmount());
 
         verify(userRepository).findById(anyString());
         verify(restaurantRepository).findById(anyString());
