@@ -69,17 +69,20 @@ public class GetPopularRestaurantService {
                 .collect(Collectors.toList());
 
         if (BooleanUtils.isTrue(request.getByTransaction())) {
-            return result
+            result = result
                     .stream()
                     .sorted(Comparator.comparing(PopularRestaurantResponse.Restaurant::getNumberOfTransactions).reversed())
-                    .limit(10)
                     .collect(Collectors.toList());
         } else {
-            return result
+            result = result
                     .stream()
                     .sorted(Comparator.comparing(PopularRestaurantResponse.Restaurant::getTotalAmount).reversed())
-                    .limit(10)
                     .collect(Collectors.toList());
         }
+
+        return result
+                .stream()
+                .limit(10)
+                .collect(Collectors.toList());
     }
 }
